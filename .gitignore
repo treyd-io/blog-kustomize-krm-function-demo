@@ -19,3 +19,4 @@
 
 # Go workspace file
 go.work
+/krm-fn-inject-cloud-sql-proxy
