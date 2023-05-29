@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kustomize.treyd.io/cloud-sql-proxy: "true"
+  name: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+      - command:
+        - /cloud_sql_proxy
+        - -term_timeout=3600s
+        - -ip_address_types=PRIVATE
+        - -log_debug_stdout
+        - -instances=your-staging-project:your-region:your-staging-instance=tcp:5432
+        - --enable_iam_login
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.0.0
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - wait-for-port 5432
+        name: proxysql
+        securityContext:
+          runAsNonRoot: true
+      - image: image1
+        name: container1
+      - image: image2
+        name: container2
