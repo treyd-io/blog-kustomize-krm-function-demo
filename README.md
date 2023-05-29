@@ -1,12 +1,12 @@
 # Build your own Kustomize transformers using KRM functions
 
-Kustomize is a great tool that allows you to patch, compose & transform kubernetes manifests without templating.
+Kustomize is a great tool that allows you to patch, compose & transform Kubernetes manifests without templating.
 
-If you haven't heard about it before, checkout their website and give it a spin: https://kustomize.io/
+If you haven't heard about it before, check out their website and give it a spin: https://kustomize.io/
 
 I find this tool particularly nice because it makes the whole setup composable and open, empowering the developers to customize (wink) their deployments without having to deal with upstream templates.
 
-One downside though is that while kustomize offers a large set of transformations (set images, replicas, apply a JSON patch to any manifest...), it might not be sufficient for all your needs. In particular if you want your platform team to offer some extra toolings to reduce boilerplate and improve developer experience.
+One downside though is that while Kustomize offers a large set of transformations (set images, replicas, apply a JSON patch to any manifest...), it might not be sufficient for all your needs. Especially if you want your platform team to offer some extra toolings to reduce boilerplate and improve developer experience.
 
 That's where the new kustomize plugin functionality comes in!
 
@@ -14,19 +14,19 @@ In this blog post, I'll walk you through how to use & write your own KRM functio
 
 ## What are KRM functions?
 
-KRM function have been introduced by the KPT tool (https://kpt.dev/book/02-concepts/03-functions) and are starting to get traction in the broader community. The idea is to provide the capability to have generic client-side transformations of kubernetes manifests packaged as containers.
+KRM functions have been introduced by the KPT tool (https://kpt.dev/book/02-concepts/03-functions) and are starting to get traction in the broader community. The idea is to provide the capability to have generic client-side transformations of kubernetes manifests packaged as containers.
 
 You can find the specification for such function here: https://github.com/kubernetes-sigs/kustomize/blob/master/cmd/config/docs/api-conventions/functions-spec.md
 
 The way they work is they take 2 sets of inputs: their own manifests, and a list of kubernetes manifests. They then return a new list of kubernetes manifests as output, which will be used for the following sets of transformations.
 
-This allows for a conceptual simple and very composable pipeline of transformations.
+This allows for a conceptually simple and very composable pipeline of transformations.
 
 The nice thing is that the latest version of kustomize allows us to use KRM functions that can be used during `kustomize build`!
 
 ## How to use a KRM function as a transformer?
 
-Let's start from the consumer perspective first. In order to use a KRM function as a transformer, you first need to write a manifest that contains:
+Let's start from the consumer perspective first. To use a KRM function as a transformer, you first need to write a manifest that contains:
 1. the container image of a KRM function
 2. the inputs to that function.
 
@@ -73,10 +73,10 @@ Then you can run `kustomize build .` in the same folder to see the result of the
 
 One caveat: currently, this feature is behind a feature flag because it's still early, so you need to run `kustomize build --enable-alpha-plugins .` instead.
 
-Another caveat is that this feature is not yet available in the kustomize version packaged with `kubectl`, so you won't be able to us this with `kubectl apply -k .` just yet. You'll need to use `kustomize build --enable-alpha-plugins . | kubectl apply -f-` until support is added.
+Another caveat is that this feature is not yet available in the kustomize version packaged with `kubectl`, so you won't be able to use this with `kubectl apply -k .` just yet. You'll need to use `kustomize build --enable-alpha-plugins . | kubectl apply -f-` until support is added.
 
 
-If you don't want to write a separaet file just for the transformation, you can also just declare the transformer inline in your `kustomization.yaml`:
+If you don't want to write a separate file just for the transformation, you can also just declare the transformer inline in your `kustomization.yaml`:
 
 ```yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
@@ -122,13 +122,13 @@ You can find those working examples here: https://github.com/treyd-io/blog-kusto
 
 ## How to write a KRM function?
 
-You can write it in any language really, as long as it handles the input & output according the the KRM spec. Kustomize provides a set of go libraries through the `kyaml` package, that also includes a bunch of helper functions that are useful for manipulation kubernetes manififests, so I'll be using that.
+You can write it in any language really, as long as it handles the input & output according to the KRM spec. Kustomize provides a set of go libraries through the `kyaml` package, which also includes a bunch of helper functions that are useful for manipulation kubernetes manifests, so I'll be using that.
 
 You can find the documentation for it here: https://pkg.go.dev/sigs.k8s.io/kustomize/kyaml/fn/framework
 
-Plus golang is a bit the defactor language for platform tooling these days, so might as well stick to that!
+Plus golang is a bit the de-facto language for platform tooling these days, so might as well stick to that!
 
-So let's start by creating a new go project, and importing some libraries, and setup the boilerplate for a no-op transformer:
+So let's start by creating a new go project, importing some libraries, and setting up the boilerplate for a no-op transformer:
 
 ```sh
 go mod init tooling.devops.io/krm-fn-inject-cloud-sql-proxy
@@ -328,6 +328,6 @@ You can find a complete working example here: https://github.com/treyd-io/blog-k
 
 ## Conclusion
 
-Kustomize KRM function plugins allows for a lot of flexibility using relatively simple tools. It also provides a potentially clear interface between the developers and the platform team, with the platform team providing a set of transformers that the developer can consume.
+Kustomize KRM function plugins allow for a lot of flexibility using relatively simple tools. It also provides a potentially clear interface between the developers and the platform team, with the platform team providing a set of transformers that the developer can consume.
 
 We went through examples on how to write & consume those tools, I hope I have inspired some of you to try it out!
