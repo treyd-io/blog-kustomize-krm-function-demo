@@ -1,0 +1,12 @@
+apiVersion: examples.config.kubernetes.io/v1beta1
+kind: inject-cloud-sql-proxy
+metadata:
+  name: inject-cloud-sql-proxy
+  annotations:
+    config.kubernetes.io/function: |-
+      container:
+        image: ghcr.io/treyd-io/blog-kustomize-krm-function-demo:main
+spec:
+  proxyImage: gcr.io/cloud-sql-connectors/cloud-sql-proxy
+  proxyVersion: 2.0.0
+  proxyInstances: your-staging-project:your-region:your-staging-instance=tcp:5432
